@@ -1,9 +1,12 @@
 #ifndef AXXBSOLVER_H
 #define AXXBSOLVER_H
+#include <iostream>
 
-#include<Eigen/Core>
+// #include<Eigen/Core>
+#include <Eigen/Dense>
+#include <Eigen/Geometry>
 #include"type.h"
-#include<glog/logging.h>
+// #include<glog/logging.h>
 
 //used for hand eye calibration
 class AXXBSolver
@@ -12,8 +15,18 @@ public:
   AXXBSolver();
   AXXBSolver(const Poses A, const Poses B):A_(A),B_(B)
   {
-    CHECK(A_.size()==B_.size())<<"two sizes should be equal";
-    CHECK(A_.size()>=2)<<"at least two motions are needed";
+    if(  !(A_.size()==B_.size()) ) {
+        std::cerr <<"two sizes should be equal\n";
+        exit(2);
+    }
+
+
+    if(  !(A_.size()>=2)  ) {
+        std::cerr<<"at least two motions are needed\n";
+        exit(2);
+    }
+
+
   }
 
   virtual Pose SolveX()=0;

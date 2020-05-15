@@ -1,37 +1,30 @@
 cmake_minimum_required(VERSION 2.8)
 project(SolveAXXB)
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_HOME_DIRECTORY}/bin)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 
-file(GLOB SRC
+
+file(GLOB AXXB__SRC
     axxb/*
 )
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
-
 # Eigen
-set(MIN_EIGEN_VERSION 3.2.0)
-find_package(Eigen ${MIN_EIGEN_VERSION} REQUIRED)
-if (EIGEN_FOUND)
-  message("-- Found Eigen version ${EIGEN_VERSION}: ${EIGEN_INCLUDE_DIRS}")
-endif (EIGEN_FOUND)
+find_package(Eigen3 REQUIRED)
+include_directories(  ${EIGEN3_INCLUDE_DIRS} )
 
 
-include_directories(
-  ${EIGEN_INCLUDE_DIRS}
-)
+################
+# AXXB Library #
+################
+add_library(SolveAXXB SHARED ${AXXB__SRC})
 
-add_library(SolveAXXB SHARED ${SRC})
-## Specify libraries to link a library or executable target against
-target_link_libraries(SolveAXXB
-  ${EIGEN_LIBRARIES}
-)
 
-install(TARGETS SolveAXXB
-  LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
-  ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
-  PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
-  
-#install(FILES axxb/*.h DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
-install(DIRECTORY axxb/ DESTINATION include/SolveAXXB FILES_MATCHING PATTERN "*.h")
+
+############
+# Examples #
+############
+add_executable(test_utils examples/test_utils.cpp)
+target_link_libraries(test_utils SolveAXXB     )
+
+add_executable(demo1 examples/demo1.cpp)
+target_link_libraries(demo1 SolveAXXB     )
